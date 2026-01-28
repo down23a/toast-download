@@ -2,11 +2,24 @@
 setlocal enabledelayedexpansion
 
 REM ===== KONFIGURACE =====
-set VERSION=0.0.4
+set "PUBSPEC_PATH=D:\Dev\Apps\toastAuto\code\pubspec.yaml"
+if not exist "%PUBSPEC_PATH%" (
+  echo Soubor %PUBSPEC_PATH% nenalezen.
+  exit /b 1
+)
+set "VERSION="
+for /f "tokens=1,* delims=:" %%A in ('findstr /b /c:"version:" "%PUBSPEC_PATH%"') do set "VERSION=%%B"
+for /f "tokens=* delims= " %%A in ("%VERSION%") do set "VERSION=%%A"
+if "%VERSION%"=="" (
+  echo Verze v pubspec.yaml nenalezena.
+  exit /b 1
+)
 set TAG=v%VERSION%
 set TITLE=Toastmasters %VERSION%
 set REMOTE=origin
 set BRANCH=master
+
+echo Pouzivam verzi z: %PUBSPEC_PATH%
 
 echo === GIT STATUS ===
 git status
