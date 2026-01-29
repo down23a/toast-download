@@ -62,4 +62,12 @@ IF %ERRORLEVEL% NEQ 0 (
 
 
 
+REM ===== ZAPIS VERZE DO GOOGLE SHEETS =====
+set "GS_URL=https://script.google.com/macros/s/AKfycbywBHAkl_l1RMXT2gETU50Yi_lRIlxAJuEUfgziUE5bUrr6oZ9dEq6FsiDmw_BLckDxdg/exec"
+
+echo Zapisuji verzi do Google Sheets: %VERSION%
+curl -L "%GS_URL%?version=%VERSION%"
+
+
+
 pause

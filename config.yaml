@@ -2,3 +2,4 @@ yamlnext_meeting_date: "2025-12-18T23:10:00"
 days_before_meeting: 7
 reminder_interval_days: 2
 max_reminders: 30
+latest_version_code: 0.1.2+17
