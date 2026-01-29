@@ -59,3 +59,7 @@ IF %ERRORLEVEL% NEQ 0 (
 ) ELSE (
   echo Release %TAG% uz existuje, updatuji assets
   gh
+
+
+
+pause
