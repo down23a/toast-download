@@ -81,9 +81,12 @@ IF %ERRORLEVEL% NEQ 0 (
     --latest
 ) ELSE (
   echo Release %TAG% uz existuje, updatuji assets
-  gh
-
-
+  gh release upload %TAG% ^
+    app-release.apk ^
+    update.yaml ^
+    config.yaml ^
+    --clobber
+)
 
 REM ===== ZAPIS VERZE DO GOOGLE SHEETS =====
 set "GS_URL=https://script.google.com/macros/s/AKfycbywBHAkl_l1RMXT2gETU50Yi_lRIlxAJuEUfgziUE5bUrr6oZ9dEq6FsiDmw_BLckDxdg/exec"
