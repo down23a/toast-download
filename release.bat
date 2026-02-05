@@ -14,12 +14,35 @@ if "%VERSION%"=="" (
   echo Verze v pubspec.yaml nenalezena.
   exit /b 1
 )
+for /f "tokens=1,2 delims=+" %%A in ("%VERSION%") do (
+  set "VERSION_NAME=%%A"
+  set "VERSION_CODE=%%B"
+)
+if "%VERSION_CODE%"=="" (
+  echo Nepodarilo se nacist build number z verze: %VERSION%
+  exit /b 1
+)
 set TAG=v%VERSION%
 set TITLE=Toastmasters %VERSION%
 set REMOTE=origin
 set BRANCH=master
 
 echo Pouzivam verzi z: %PUBSPEC_PATH%
+echo Build number: %VERSION_CODE%
+
+REM ===== AKTUALIZACE CONFIG.YAML =====
+set "CONFIG_PATH=config.yaml"
+if exist "%CONFIG_PATH%" (
+  powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$path = '%CONFIG_PATH%';" ^
+    "$lines = Get-Content $path;" ^
+    "$updated = $false;" ^
+    "$lines = $lines | ForEach-Object { if ($_ -match '^latest_version_code:\s*') { $updated = $true; 'latest_version_code: %VERSION_CODE%' } else { $_ } };" ^
+    "if (-not $updated) { $lines += 'latest_version_code: %VERSION_CODE%' }" ^
+    "Set-Content -Path $path -Encoding ASCII -Value $lines"
+) else (
+  echo Config file %CONFIG_PATH% nenalezen, preskakuji aktualizaci.
+)
 
 echo === GIT STATUS ===
 git status
