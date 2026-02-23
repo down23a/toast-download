@@ -39,7 +39,7 @@ if exist "%CONFIG_PATH%" (
     "$updated = $false;" ^
     "$lines = $lines | ForEach-Object { if ($_ -match '^latest_version_code:\s*') { $updated = $true; 'latest_version_code: %VERSION_CODE%' } else { $_ } };" ^
     "if (-not $updated) { $lines += 'latest_version_code: %VERSION_CODE%' }" ^
-    "Set-Content -Path $path -Encoding ASCII -Value $lines"
+    "Set-Content -Path $path -Encoding utf8NoBOM -Value $lines"
 ) else (
   echo Config file %CONFIG_PATH% nenalezen, preskakuji aktualizaci.
 )
