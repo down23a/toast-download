@@ -33,16 +33,20 @@ echo Build number: %VERSION_CODE%
 REM ===== AKTUALIZACE CONFIG.YAML =====
 set "CONFIG_PATH=config.yaml"
 if exist "%CONFIG_PATH%" (
-  powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-    "$path = '%CONFIG_PATH%';" ^
-    "$lines = Get-Content $path;" ^
-    "$updated = $false;" ^
-    "$lines = $lines | ForEach-Object { if ($_ -match '^latest_version_code:\s*') { $updated = $true; 'latest_version_code: %VERSION_CODE%' } else { $_ } };" ^
-    "if (-not $updated) { $lines += 'latest_version_code: %VERSION_CODE%' }" ^
-) else (
-  echo Config file %CONFIG_PATH% nenalezen, preskakuji aktualizaci.
-)
-
+    powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+      "$path = '%CONFIG_PATH%';" ^
+      "$enc = New-Object System.Text.UTF8Encoding($false);" ^
+      "$text = [System.IO.File]::ReadAllText($path, $enc);" ^
+      "if ($text -match '(?m)^latest_version_code:\s*') {" ^
+      "  $text = [System.Text.RegularExpressions.Regex]::Replace($text, '(?m)^latest_version_code:\s*.*$', 'latest_version_code: %VERSION_CODE%')" ^
+      "} else {" ^
+      "  if ($text -notmatch '(\r?\n)$') { $text += [Environment]::NewLine }" ^
+      "  $text += 'latest_version_code: %VERSION_CODE%' + [Environment]::NewLine" ^
+      "}" ^
+      "[System.IO.File]::WriteAllText($path, $text, $enc)"
+  ) else (
+    echo Config file %CONFIG_PATH% nenalezen, preskakuji aktualizaci.
+  )
 echo === GIT STATUS ===
 git status
 
